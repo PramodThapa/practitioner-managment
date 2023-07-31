@@ -7,10 +7,8 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 
 import { Paper, Tabs, Tab, Box } from "@mui/material";
 
-import FlexBox from "../component/common/FlexBox";
-import TabPanel from "../component/common/TabPanel";
-import LoginForm from "../component/Authentication/LoginForm";
-import SignUpForm from "../component/Authentication/SignUpForm";
+import { FlexBox, TabPanel } from "../component/common";
+import { LoginForm, SignUpForm } from "../component/Authentication";
 
 const PageWrapper = styled.div`
   height: 100vh;
@@ -24,7 +22,7 @@ const PageWrapper = styled.div`
   }
 `;
 
-function Login() {
+export function Login() {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -62,5 +60,3 @@ function Login() {
     </PageWrapper>
   );
 }
-
-export default Login;

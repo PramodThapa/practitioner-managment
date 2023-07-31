@@ -1,8 +1,8 @@
 import * as yup from "yup";
 
-import { FORM_VALIDATION_MESSAGE } from "../constants/lang";
+import { FORM_VALIDATION_MESSAGE } from "../constants";
 
-const signUpValidationSchema = yup.object({
+export const signUpValidationSchema = yup.object({
   username: yup.string().required(FORM_VALIDATION_MESSAGE.REQUIRED("Username")),
   password: yup
     .string()
@@ -14,5 +14,3 @@ const signUpValidationSchema = yup.object({
     .oneOf([yup.ref("password")], FORM_VALIDATION_MESSAGE.MATCH("Password"))
     .required(FORM_VALIDATION_MESSAGE.REQUIRED("Password")),
 });
-
-export default signUpValidationSchema;

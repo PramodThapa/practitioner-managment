@@ -4,14 +4,13 @@ import { Paper, Button, Box } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
 
-import Modal from "../component/common/Modal";
-import Header from "../component/common/Header";
-import FlexBox from "../component/common/FlexBox";
-import Container from "../component/common/Container";
-import AddEditPractitionerForm from "../component/Practitioner/AddEditPractitionerForm";
-import Practitioner from "../component/Practitioner/Practitioner";
+import { Modal, Header, Container, FlexBox } from "../component/common";
 
-export default function Home() {
+import AddEditPractitionerForm from "../component/Practitioner/AddEditPractitionerForm";
+
+import { PractitionerTable } from "../component/Practitioner";
+
+export function Home() {
   const [addPractitionerOpen, setAddPractitionerOpen] = useState(false);
 
   const handleOpenModal = () => {
@@ -42,17 +41,10 @@ export default function Home() {
           <Paper
             elevation={2}
             sx={{
-              overflowY: "scroll",
-              height: "calc(100vh - 190px)",
               marginTop: "var(--spacing-6x)",
             }}
           >
-            <Practitioner />
-            <Practitioner />
-            <Practitioner />
-            <Practitioner />
-            <Practitioner />
-            <Practitioner />
+            <PractitionerTable />
           </Paper>
 
           <Modal

@@ -4,9 +4,9 @@ import { useFormik } from "formik";
 
 import { TextField, Button, Box, Alert } from "@mui/material";
 
-import signUpValidationSchema from "../../schema/signUpSchema";
+import { signUpValidationSchema } from "../../schema";
 
-const SignUpForm: React.FC = () => {
+export const SignUpForm: React.FC = () => {
   const { handleBlur, handleChange, values, handleSubmit, touched, errors } =
     useFormik({
       initialValues: {
@@ -73,5 +73,3 @@ const SignUpForm: React.FC = () => {
     </form>
   );
 };
-
-export default SignUpForm;
