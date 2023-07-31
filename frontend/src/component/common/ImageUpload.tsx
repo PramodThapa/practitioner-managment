@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 
 import FileUploadIcon from "@mui/icons-material/FileUpload";
-import React, { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -36,7 +36,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const ImageUpload = () => {
+export const ImageUpload = () => {
   const [previewUrl, setPreviewUrl] = useState<string | ArrayBuffer | null>(
     null
   );
@@ -94,5 +94,3 @@ const ImageUpload = () => {
     </Wrapper>
   );
 };
-
-export default ImageUpload;

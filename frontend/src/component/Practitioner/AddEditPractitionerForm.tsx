@@ -1,6 +1,3 @@
-import React from "react";
-import ImageUpload from "../common/ImageUpload";
-
 import {
   Select,
   Checkbox,
@@ -22,7 +19,7 @@ import { useFormik } from "formik";
 
 import styled from "styled-components";
 
-import FlexBox from "../common/FlexBox";
+import { FlexBox, ImageUpload } from "../common";
 
 const FormWrapper = styled.div`
   width: 400px;

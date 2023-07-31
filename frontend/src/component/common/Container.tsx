@@ -22,10 +22,8 @@ const containerWidth = (size: string | undefined): string => {
   return "100%";
 };
 
-const Container = styled.div<ContainerProps>`
+export const Container = styled.div<ContainerProps>`
   margin: 0 auto;
   padding: ${({ padding }) => padding};
   max-width: ${({ size }) => containerWidth(size)};
 `;
-
-export default Container;

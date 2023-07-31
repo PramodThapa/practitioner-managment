@@ -4,6 +4,21 @@
   box-sizing: border-box;
 }
 
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--color-grey-400);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-grey-300);
+  border-radius: 20px;
+  border: 2px solid var(--color-grey-300);
+}
+
 :root {
   /* Grey color */
   --color-grey-50: #fafafa;

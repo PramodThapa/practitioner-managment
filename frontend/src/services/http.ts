@@ -1,20 +1,26 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
+
 import { appConfig } from "../../config";
-import { CONTENT_TYPE_JSON } from "../constants/constants";
+
+import { CONTENT_TYPE_JSON } from "../constants";
+
 /**
  * Axios instance for pipeline http.
  */
 const http = axios.create({
-  baseURL: appConfig.apiBaseUrl,
+  baseURL: appConfig.appUrl,
   headers: {
     "Content-Type": CONTENT_TYPE_JSON,
     Accept: CONTENT_TYPE_JSON,
   },
 });
 
+/**
+ * Request interceptor
+ */
 http.interceptors.request.use(
   (request: InternalAxiosRequestConfig) => {
-    const accessToken = "test";
+    const accessToken = "";
 
     if (accessToken) {
       request.headers.Authorization = `Bearer ${accessToken}`;
@@ -27,6 +33,9 @@ http.interceptors.request.use(
   }
 );
 
+/**
+ * Response interceptor.
+ */
 http.interceptors.response.use(
   (response) => {
     return response;
@@ -36,7 +45,7 @@ http.interceptors.response.use(
 
     if (error.response.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const access_token = "test-2";
+      const access_token = "";
       axios.defaults.headers.common["Authorization"] = "Bearer " + access_token;
 
       return http(originalRequest);

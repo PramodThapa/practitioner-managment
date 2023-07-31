@@ -1,28 +1,59 @@
-import React from "react";
-
 import { useFormik } from "formik";
 
-import { TextField, Box, Alert } from "@mui/material";
+import { TextField, Box, Button } from "@mui/material";
 
-import loginValidationSchema from "../../schema/loginSchema";
+import { login } from "../../services";
 
-const LoginForm = React.forwardRef((_, ref) => {
-  const { handleBlur, handleChange, values, handleSubmit, touched, errors } =
-    useFormik({
-      initialValues: {
-        username: "",
-        password: "",
-      },
-      validationSchema: loginValidationSchema,
-      onSubmit: () => {
-        // Handle form submission here
-        console.log("Some API Call");
-      },
-    });
+import { loginValidationSchema } from "../../schema";
 
-  React.useImperativeHandle(ref, () => ({
-    handleSubmit: handleSubmit,
-  }));
+const handleLogin = async (
+  value: initialValues,
+  setSubmitting: any,
+  resetForm: any
+) => {
+  try {
+    setSubmitting(true);
+
+    resetForm();
+
+    console.log(value);
+
+    //await login(value);
+  } catch (error) {
+  } finally {
+    //setSubmitting(false);
+  }
+};
+
+interface initialValues {
+  username: string;
+  password: string;
+}
+
+export const LoginForm = () => {
+  const {
+    handleBlur,
+    handleChange,
+    values,
+    handleSubmit,
+    isSubmitting,
+    touched,
+    errors,
+  } = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+    },
+    validationSchema: loginValidationSchema,
+    onSubmit: async (value: initialValues, { setSubmitting, resetForm }) =>
+      await handleLogin(value, setSubmitting, resetForm),
+  });
+
+  console.log(isSubmitting);
+
+  // React.useImperativeHandle(ref, () => ({
+  //   handleSubmit: handleSubmit,
+  // }));
 
   return (
     <form onSubmit={handleSubmit}>
@@ -60,16 +91,15 @@ const LoginForm = React.forwardRef((_, ref) => {
         />
       </Box>
 
-      {/* <Button
+      <Button
         fullWidth
-        onClick={handleClick}
-        variant="contained"
+        type="submit"
         color="primary"
+        disabled={isSubmitting}
+        variant="contained"
       >
         Login
-      </Button> */}
+      </Button>
     </form>
   );
-});
-
-export default LoginForm;
+};
