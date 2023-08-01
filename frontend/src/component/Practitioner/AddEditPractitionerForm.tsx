@@ -19,11 +19,12 @@ import { useFormik } from "formik";
 
 import styled from "styled-components";
 
-import { FlexBox, ImageUpload } from "../common";
+import { FlexBox, Gender, ImageUpload } from "../common";
+import { forwardRef, useImperativeHandle } from "react";
+import { practitionerFormSchema } from "../../validation";
+import { ErrorMessage } from "../common/ErrorMessage";
 
 const FormWrapper = styled.div`
-  width: 400px;
-
   .mt-4 {
     margin-top: var(--spacing-4x);
   }
@@ -56,7 +57,7 @@ interface initialValues {
 
 const autoCompleteValue = Object.values(Days).map((day) => ({ day }));
 
-const AddEditPractitionerForm = () => {
+const AddEditPractitionerForm = forwardRef((props, ref) => {
   const initialValues: initialValues = {
     name: "",
     dob: null,
@@ -78,10 +79,11 @@ const AddEditPractitionerForm = () => {
     setFieldValue,
   } = useFormik({
     initialValues: initialValues,
+    validationSchema: practitionerFormSchema,
     onSubmit: () => {},
   });
 
-  console.log(values);
+  useImperativeHandle(ref, () => ({ handleSubmit }));
 
   return (
     <FormWrapper>
@@ -94,25 +96,39 @@ const AddEditPractitionerForm = () => {
         name="name"
         label="Name"
         className="mt-4"
+        onBlur={handleBlur}
         value={values?.name}
         onChange={handleChange}
+        error={touched.name && !!errors.name}
+        helperText={touched.name && errors.name}
       />
 
-      <FormControl fullWidth variant="outlined" className="mt-4">
+      <FormControl
+        fullWidth
+        className="mt-4"
+        variant="outlined"
+        error={touched.gender && Boolean(errors.gender)}
+      >
         <InputLabel id="gender-label">Gender *</InputLabel>
         <Select
           fullWidth
           id="select"
           name="gender"
           label="Gender *"
+          onBlur={handleBlur}
           labelId="gender-label"
           value={values.gender}
           onChange={handleChange}
         >
-          <MenuItem value={"Male"}>Male</MenuItem>
-          <MenuItem value={"Female"}>Female</MenuItem>
-          <MenuItem value={"Others"}>Others</MenuItem>
+          {Object.values(Gender).map((value, index) => (
+            <MenuItem value={value} key={index}>
+              {value}
+            </MenuItem>
+          ))}
         </Select>
+        {touched.gender && errors.gender && (
+          <ErrorMessage>{errors.gender}</ErrorMessage>
+        )}
       </FormControl>
 
       <Autocomplete
@@ -120,10 +136,17 @@ const AddEditPractitionerForm = () => {
         className="mt-4"
         id="autocomplete"
         options={autoCompleteValue}
-        onChange={(event, value) => setFieldValue("workingDays", value)}
+        onChange={(_, value) => setFieldValue("workingDays", value)}
         getOptionLabel={(option) => option.day}
         renderInput={(params) => (
-          <TextField {...params} label="Working Days" placeholder="Days" />
+          <TextField
+            {...params}
+            placeholder="Days"
+            label="Working Days"
+            onBlur={handleBlur}
+            helperText={touched.workingDays && errors.workingDays}
+            error={touched.workingDays && Boolean(errors.workingDays)}
+          />
         )}
       />
 
@@ -135,17 +158,17 @@ const AddEditPractitionerForm = () => {
           onChange={(value) => setFieldValue("dob", value)}
         />
 
-        <FlexBox direction="row" align="center" className="mt-4">
+        <FlexBox direction="row" align="center" className="mt-4 fullWidth">
           <DatePicker
-            sx={{ width: "200px" }}
             label="Start Date *"
+            sx={{ width: "50%" }}
             value={values?.startDate}
             onChange={(value) => setFieldValue("startDate", value)}
           />
           <span>-</span>
           <DatePicker
-            sx={{ width: "200px" }}
             label="End Date *"
+            sx={{ width: "50%" }}
             value={values?.endDate}
             minDate={values?.startDate}
           />
@@ -164,6 +187,8 @@ const AddEditPractitionerForm = () => {
         value={values?.contact}
         onChange={handleChange}
         placeholder="+XXX-XXXXXXXXXX"
+        error={touched.contact && !!errors.contact}
+        helperText={touched.contact && errors.contact}
       />
 
       <FormControlLabel
@@ -179,6 +204,6 @@ const AddEditPractitionerForm = () => {
       />
     </FormWrapper>
   );
-};
+});
 
 export default AddEditPractitionerForm;

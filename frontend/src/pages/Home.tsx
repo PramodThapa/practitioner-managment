@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { Paper, Button, Box } from "@mui/material";
 
@@ -11,6 +11,7 @@ import AddEditPractitionerForm from "../component/Practitioner/AddEditPractition
 import { PractitionerTable } from "../component/Practitioner";
 
 export function Home() {
+  const practitionerFormRef = useRef<any | null>(null);
   const [addPractitionerOpen, setAddPractitionerOpen] = useState(false);
 
   const handleOpenModal = () => {
@@ -19,6 +20,10 @@ export function Home() {
 
   const handleCloseModal = () => {
     setAddPractitionerOpen(false);
+  };
+
+  const handleSubmit = () => {
+    practitionerFormRef.current?.handleSubmit?.();
   };
 
   return (
@@ -51,9 +56,9 @@ export function Home() {
             title="Add Practitioner"
             open={addPractitionerOpen}
             onClose={handleCloseModal}
-            onSubmit={() => {}}
+            onSubmit={handleSubmit}
           >
-            <AddEditPractitionerForm />
+            <AddEditPractitionerForm ref={practitionerFormRef} />
           </Modal>
         </Container>
       </Box>
