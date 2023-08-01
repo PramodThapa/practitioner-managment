@@ -38,4 +38,5 @@ lerna-debug.log*
 # Ignore files in the backend/data/diagnostic.data/ directory
 /data
 
+/.env
 
