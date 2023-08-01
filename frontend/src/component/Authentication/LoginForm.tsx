@@ -4,7 +4,7 @@ import { TextField, Box, Button } from "@mui/material";
 
 import { login } from "../../services";
 
-import { loginValidationSchema } from "../../schema";
+import { loginValidationSchema } from "../../validation";
 
 const handleLogin = async (
   value: initialValues,

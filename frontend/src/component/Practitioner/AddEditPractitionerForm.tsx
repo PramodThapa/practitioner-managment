@@ -19,10 +19,10 @@ import { useFormik } from "formik";
 
 import styled from "styled-components";
 
-import { FlexBox, Gender, ImageUpload } from "../common";
+import { Gender, ImageUpload } from "../common";
+import { ErrorMessage } from "../common/ErrorMessage";
 import { forwardRef, useImperativeHandle } from "react";
 import { practitionerFormSchema } from "../../validation";
-import { ErrorMessage } from "../common/ErrorMessage";
 
 const FormWrapper = styled.div`
   .mt-4 {
@@ -142,7 +142,7 @@ const AddEditPractitionerForm = forwardRef((props, ref) => {
           <TextField
             {...params}
             placeholder="Days"
-            label="Working Days"
+            label="Working Days *"
             onBlur={handleBlur}
             helperText={touched.workingDays && errors.workingDays}
             error={touched.workingDays && Boolean(errors.workingDays)}
@@ -153,26 +153,52 @@ const AddEditPractitionerForm = forwardRef((props, ref) => {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
           label="DOB *"
-          className="mt-4 fullWidth"
           value={values?.dob}
+          className="mt-4 fullWidth"
+          slotProps={{
+            textField: {
+              name: "dob",
+              onBlur: handleBlur,
+              variant: "outlined",
+              error: touched.dob && !!errors.dob,
+              helperText: touched.dob && errors.dob,
+            },
+          }}
           onChange={(value) => setFieldValue("dob", value)}
         />
 
-        <FlexBox direction="row" align="center" className="mt-4 fullWidth">
-          <DatePicker
-            label="Start Date *"
-            sx={{ width: "50%" }}
-            value={values?.startDate}
-            onChange={(value) => setFieldValue("startDate", value)}
-          />
-          <span>-</span>
-          <DatePicker
-            label="End Date *"
-            sx={{ width: "50%" }}
-            value={values?.endDate}
-            minDate={values?.startDate}
-          />
-        </FlexBox>
+        <DatePicker
+          label="Start Date *"
+          className="mt-4 fullWidth"
+          value={values?.startDate}
+          onChange={(value) => setFieldValue("startDate", value)}
+          slotProps={{
+            textField: {
+              name: "dob",
+              onBlur: handleBlur,
+              variant: "outlined",
+              error: touched.startDate && !!errors.startDate,
+              helperText: touched.startDate && errors.startDate,
+            },
+          }}
+        />
+
+        <DatePicker
+          label="End Date *"
+          value={values?.endDate}
+          className="mt-4 fullWidth"
+          minDate={values?.startDate}
+          onChange={(value) => setFieldValue("endDate", value)}
+          slotProps={{
+            textField: {
+              name: "endDate",
+              onBlur: handleBlur,
+              variant: "outlined",
+              error: touched.endDate && !!errors.endDate,
+              helperText: touched.endDate && errors.endDate,
+            },
+          }}
+        />
       </LocalizationProvider>
 
       <TextField
@@ -186,7 +212,6 @@ const AddEditPractitionerForm = forwardRef((props, ref) => {
         onBlur={handleBlur}
         value={values?.contact}
         onChange={handleChange}
-        placeholder="+XXX-XXXXXXXXXX"
         error={touched.contact && !!errors.contact}
         helperText={touched.contact && errors.contact}
       />
