@@ -32,13 +32,13 @@ interface initialValues {
 
 export const LoginForm = () => {
   const {
+    values,
+    errors,
+    touched,
     handleBlur,
     handleChange,
-    values,
-    handleSubmit,
     isSubmitting,
-    touched,
-    errors,
+    handleSubmit,
   } = useFormik({
     initialValues: {
       username: "",
@@ -50,10 +50,6 @@ export const LoginForm = () => {
   });
 
   console.log(isSubmitting);
-
-  // React.useImperativeHandle(ref, () => ({
-  //   handleSubmit: handleSubmit,
-  // }));
 
   return (
     <form onSubmit={handleSubmit}>
