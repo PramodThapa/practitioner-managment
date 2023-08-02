@@ -2,26 +2,38 @@ import React from "react";
 
 import { useFormik } from "formik";
 
-import { TextField, Button, Box, Alert } from "@mui/material";
+import { TextField, Button, Box } from "@mui/material";
 
 import { signUpValidationSchema } from "../../validation";
 
-export const SignUpForm: React.FC = () => {
-  const { handleBlur, handleChange, values, handleSubmit, touched, errors } =
-    useFormik({
-      initialValues: {
-        username: "",
-        password: "",
-        confirmPassword: "",
-      },
-      validationSchema: signUpValidationSchema,
-      onSubmit: () => {},
-    });
+import { SignUpFormValue } from "../../types";
+
+interface SignUpFormProps {
+  handleSignUp: Function;
+}
+
+export const SignUpForm: React.FC<SignUpFormProps> = ({ handleSignUp }) => {
+  const {
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+    isSubmitting,
+    handleSubmit,
+  } = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+      confirmPassword: "",
+    },
+    validationSchema: signUpValidationSchema,
+    onSubmit: async (value: SignUpFormValue, { setSubmitting, resetForm }) =>
+      await handleSignUp(value, setSubmitting, resetForm),
+  });
+
   return (
     <form onSubmit={handleSubmit}>
-      <Box>
-        <Alert severity="error">This is an error alert — check it out!</Alert>
-      </Box>
       <Box paddingTop={"var(--spacing-6x)"}>
         <TextField
           fullWidth
@@ -67,7 +79,13 @@ export const SignUpForm: React.FC = () => {
         />
       </Box>
 
-      <Button type="submit" fullWidth variant="contained" color="primary">
+      <Button
+        fullWidth
+        type="submit"
+        color="primary"
+        variant="contained"
+        disabled={isSubmitting}
+      >
         SignUp
       </Button>
     </form>

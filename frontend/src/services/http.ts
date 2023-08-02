@@ -38,7 +38,7 @@ http.interceptors.request.use(
  */
 http.interceptors.response.use(
   (response) => {
-    return response;
+    return response?.data;
   },
   function (error) {
     const originalRequest = error.config;

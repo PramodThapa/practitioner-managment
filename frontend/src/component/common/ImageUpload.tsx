@@ -59,7 +59,7 @@ export const ImageUpload = () => {
   };
 
   /**
-   *
+   * Handle upload button click.
    */
   const handleUploadButtonClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();

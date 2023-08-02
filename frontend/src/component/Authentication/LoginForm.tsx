@@ -1,36 +1,25 @@
+import React from "react";
+
 import { useFormik } from "formik";
 
 import { TextField, Box, Button } from "@mui/material";
 
-import { login } from "../../services";
-
 import { loginValidationSchema } from "../../validation";
 
-const handleLogin = async (
-  value: initialValues,
-  setSubmitting: any,
-  resetForm: any
-) => {
-  try {
-    setSubmitting(true);
-
-    resetForm();
-
-    console.log(value);
-
-    //await login(value);
-  } catch (error) {
-  } finally {
-    //setSubmitting(false);
-  }
-};
-
-interface initialValues {
+interface LoginInitialValue {
   username: string;
   password: string;
 }
 
-export const LoginForm = () => {
+interface LoginFormProps {
+  onFormSubmit: Function;
+  initialValue: LoginInitialValue;
+}
+
+export const LoginForm: React.FC<LoginFormProps> = ({
+  onFormSubmit,
+  initialValue,
+}) => {
   const {
     values,
     errors,
@@ -40,23 +29,14 @@ export const LoginForm = () => {
     isSubmitting,
     handleSubmit,
   } = useFormik({
-    initialValues: {
-      username: "",
-      password: "",
-    },
+    initialValues: initialValue,
     validationSchema: loginValidationSchema,
-    onSubmit: async (value: initialValues, { setSubmitting, resetForm }) =>
-      await handleLogin(value, setSubmitting, resetForm),
+    onSubmit: async (value: LoginInitialValue, { setSubmitting }) =>
+      await onFormSubmit(value, setSubmitting),
   });
-
-  console.log(isSubmitting);
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* <Box>
-        <Alert severity="error">This is an error alert — check it out!</Alert>
-      </Box> */}
-
       <Box paddingTop={"var(--spacing-6x)"}>
         <TextField
           fullWidth
@@ -91,8 +71,8 @@ export const LoginForm = () => {
         fullWidth
         type="submit"
         color="primary"
-        disabled={isSubmitting}
         variant="contained"
+        disabled={isSubmitting}
       >
         Login
       </Button>

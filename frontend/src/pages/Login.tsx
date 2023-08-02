@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 
 import styled from "styled-components";
 
@@ -9,6 +9,14 @@ import { Paper, Tabs, Tab, Box } from "@mui/material";
 
 import { FlexBox, TabPanel } from "../component/common";
 import { LoginForm, SignUpForm } from "../component/Authentication";
+
+import { userLogin, userSignUp } from "../services";
+import { useNavigate } from "react-router-dom";
+import { LoginInFormValue, SignUpFormValue } from "../types";
+import { addUserLoginToLocalStorage } from "../services/localStroage";
+import { AxiosError } from "axios";
+
+import { handleError } from "../utils";
 
 const PageWrapper = styled.div`
   height: 100vh;
@@ -23,10 +31,65 @@ const PageWrapper = styled.div`
 `;
 
 export function Login() {
-  const [value, setValue] = React.useState(0);
+  const navigate = useNavigate();
+  const [value, setValue] = useState<number>(0);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+  };
+
+  /**
+   * Function to handle login form submit.
+   *
+   * @param {LoginInitialValue} value Form values.
+   * @param {Function} setSubmitting Function to handle set submitting.
+   */
+  const handleUserLogin = async (
+    value: LoginInFormValue,
+    setSubmitting: Function
+  ) => {
+    try {
+      setSubmitting(true);
+
+      const response = await userLogin(value);
+
+      const { token, user } = response?.data;
+
+      addUserLoginToLocalStorage(token, user);
+
+      navigate("/");
+    } catch (error: Error | AxiosError | any) {
+      handleError(error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  /**
+   * Function to handle sign up form submit.
+   *
+   * @param {SignUpInitialValues} value Sign up form values.
+   * @param {Function} setSubmitting Function to handle set submitting.
+   */
+  const handleUserSignUp = async (
+    value: SignUpFormValue,
+    setSubmitting: Function
+  ) => {
+    const { username, password } = value;
+    try {
+      setSubmitting(true);
+
+      const response = await userSignUp({ username, password });
+
+      const { token, user } = response?.data;
+
+      addUserLoginToLocalStorage(token, user);
+      navigate("/");
+    } catch (error: Error | AxiosError | any) {
+      handleError(error[0]);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -49,10 +112,13 @@ export function Login() {
           </Tabs>
           <Box padding={"var(--spacing-6x)"}>
             <TabPanel index={value} value={0}>
-              <LoginForm></LoginForm>
+              <LoginForm
+                onFormSubmit={handleUserLogin}
+                initialValue={{ username: "", password: "" }}
+              ></LoginForm>
             </TabPanel>
             <TabPanel index={value} value={1}>
-              <SignUpForm></SignUpForm>
+              <SignUpForm handleSignUp={handleUserSignUp}></SignUpForm>
             </TabPanel>
           </Box>
         </Paper>
