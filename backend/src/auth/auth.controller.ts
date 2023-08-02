@@ -26,7 +26,7 @@ export class AuthController {
    *
    * @returns {Users}
    */
-  @Get('/login')
+  @Post('/login')
   async validate(@Body() user: LoginDto): Promise<Response<UserResponse>> {
     return this.authService.validateUser(user);
   }
