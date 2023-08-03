@@ -1,18 +1,35 @@
-import axios, { InternalAxiosRequestConfig } from "axios";
+import axios, {
+  AxiosProxyConfig,
+  AxiosRequestConfig,
+  CreateAxiosDefaults,
+  InternalAxiosRequestConfig,
+} from "axios";
 
 import { appConfig } from "../../config";
 
 import { CONTENT_TYPE_JSON } from "../constants";
+import {
+  addUserLoginToLocalStorage,
+  getAccessTokenFromLocalStorage,
+  getRefreshTokenFromLocalStorage,
+  getUserFromLocalStorage,
+} from "./localStroage";
+import { refreshAccessToken } from ".";
+import { logOut } from "../utils";
 
-/**
- * Axios instance for pipeline http.
- */
-const http = axios.create({
+export const axiosConfig: AxiosRequestConfig = {
   baseURL: appConfig.appUrl,
   headers: {
     "Content-Type": CONTENT_TYPE_JSON,
     Accept: CONTENT_TYPE_JSON,
   },
+};
+
+/**
+ * Axios instance for http.
+ */
+const http = axios.create({
+  ...axiosConfig,
 });
 
 /**
@@ -20,7 +37,7 @@ const http = axios.create({
  */
 http.interceptors.request.use(
   (request: InternalAxiosRequestConfig) => {
-    const accessToken = "";
+    const accessToken = getAccessTokenFromLocalStorage();
 
     if (accessToken) {
       request.headers.Authorization = `Bearer ${accessToken}`;
@@ -40,15 +57,28 @@ http.interceptors.response.use(
   (response) => {
     return response?.data;
   },
-  function (error) {
+  async (error) => {
     const originalRequest = error.config;
 
-    if (error.response.status === 403 && !originalRequest._retry) {
+    if (error.response.status === 401 && !originalRequest?._retry) {
       originalRequest._retry = true;
-      const access_token = "";
-      axios.defaults.headers.common["Authorization"] = "Bearer " + access_token;
+      const { id } = getUserFromLocalStorage();
+      const refreshToken = getRefreshTokenFromLocalStorage() || "";
 
-      return http(originalRequest);
+      try {
+        const response = await refreshAccessToken({
+          id,
+          refreshToken,
+        });
+
+        const { token, user } = response?.data;
+        addUserLoginToLocalStorage(token, user);
+        return http(originalRequest);
+      } catch (error) {
+        logOut();
+
+        return;
+      }
     }
 
     return Promise.reject(error);

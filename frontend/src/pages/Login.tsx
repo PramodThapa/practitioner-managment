@@ -51,7 +51,7 @@ export function Login() {
     try {
       setSubmitting(true);
 
-      const response = await userLogin(value);
+      const { data: response } = await userLogin(value);
 
       const { token, user } = response?.data;
 
@@ -79,7 +79,7 @@ export function Login() {
     try {
       setSubmitting(true);
 
-      const response = await userSignUp({ username, password });
+      const { data: response } = await userSignUp({ username, password });
 
       const { token, user } = response?.data;
 

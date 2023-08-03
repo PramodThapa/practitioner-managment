@@ -1,2 +1,3 @@
 export * from "./string";
-export * from "./handleError";
+export * from "./logout";
+export * from "./notify";

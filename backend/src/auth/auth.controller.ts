@@ -36,7 +36,7 @@ export class AuthController {
    *
    * @returns {Users}
    */
-  @Get('/refresh-token')
+  @Post('/access-token')
   @UseGuards(AuthGuard('refresh-jwt'))
   async validateRefreshToken(
     @Body() user: RefreshTokenDto,
