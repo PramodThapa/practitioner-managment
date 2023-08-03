@@ -11,7 +11,7 @@ interface ContainerProps {
 /**
  * Function to get the container width.
  *
- * @param size - Size of the container.
+ * @param {size} size Size of the container.
  * @returns {string} Container width.
  */
 const containerWidth = (size: string | undefined): string => {

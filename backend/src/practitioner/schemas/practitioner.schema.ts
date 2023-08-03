@@ -21,19 +21,19 @@ export class Practitioner {
   gender: Gender;
 
   @Prop()
-  contact: number;
+  contact: string;
 
   @Prop()
-  startData: Date;
+  startDate: string;
 
   @Prop()
-  endData: Date;
+  endDate: string;
 
   @Prop()
-  workingDays: number;
+  workingDays: [string];
 
   @Prop()
-  dob: Date;
+  dob: string;
 }
 
 export const PractitionerSchema = SchemaFactory.createForClass(Practitioner);

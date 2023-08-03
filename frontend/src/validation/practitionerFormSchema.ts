@@ -9,7 +9,11 @@ import { FORM_VALIDATION_MESSAGE } from "../constants";
  */
 export const practitionerFormSchema = yup.object().shape({
   dob: yup.object().required(FORM_VALIDATION_MESSAGE.REQUIRED("DOB")),
-  name: yup.string().required(FORM_VALIDATION_MESSAGE.REQUIRED("name")),
+  name: yup
+    .string()
+    .trim()
+    .ensure()
+    .required(FORM_VALIDATION_MESSAGE.REQUIRED("name")),
   gender: yup.string().required(FORM_VALIDATION_MESSAGE.REQUIRED("gender")),
 
   startDate: yup

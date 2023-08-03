@@ -1,153 +1,216 @@
 import React from "react";
-import { FlexBox, Gender, data } from "../common";
-import styled from "styled-components";
-import { Table } from "../common";
-import { Checkbox, Chip, IconButton, Avatar } from "@mui/material";
 
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import styled from "styled-components";
+
+import { Delete, Update } from "@mui/icons-material";
+import {
+  Chip,
+  Avatar,
+  Checkbox,
+  MenuItem,
+  ListItemIcon,
+  CircularProgress,
+} from "@mui/material";
+
+import dayjs from "dayjs";
+
+import { FlexBox, Table, ThreeDotMenu } from "../common";
+
 import { getAcronym } from "../../utils";
 
-const renderICUSpecialist = (tableData: data) => {
-  const { isICUSpecialist } = tableData;
+import { Gender } from "../../types";
+import { DATE_FORMATE } from "../../constants";
+import { isEmpty } from "lodash";
 
-  return (
-    <>
-      <Checkbox disabled checked={isICUSpecialist} />
-    </>
-  );
-};
+import EmptyIcon from "../../assets/EmptyIcon.svg";
 
-const renderWorkingDays = (tableData: data) => {
-  const { workingDays } = tableData;
+export interface PractitionerData {
+  _id: string;
+  dob: string;
+  name: string;
+  gender: Gender;
+  contact: string;
+  endDate: string;
+  imageURI?: string;
+  startDate: string;
+  workingDays: string[];
+  isICUSpecialist: boolean;
+}
 
-  return (
-    <>
-      {workingDays?.map((day, index) => (
-        <Chip key={index} label={day} />
-      ))}
-    </>
-  );
-};
+interface PractitionerTableProps {
+  data: any;
+  loading: boolean;
+  onDelete: (data: PractitionerData) => void;
+  onUpdate: (data: PractitionerData) => void;
+}
 
-const renderTableMenu = (tableData: data) => {
-  return (
-    <>
-      <IconButton aria-label="more">
-        <MoreVertIcon />
-      </IconButton>
-    </>
-  );
-};
+const Wrapper = styled.div`
+  .h-250 {
+    height: 250px;
+  }
+`;
 
-const renderName = (tableData: data) => {
-  const { name, imageURI } = tableData;
+export const PractitionerTable: React.FC<PractitionerTableProps> = ({
+  data = [],
+  loading,
+  onDelete,
+  onUpdate,
+}) => {
+  /**
+   * ICU specialist data renderer.
+   *
+   * @param {PractitionerData} data Table row data.
+   * @returns {JSX.Element}
+   */
+  const renderICUSpecialist = (data: PractitionerData): JSX.Element => {
+    const { isICUSpecialist } = data;
 
-  return (
-    <>
-      <Avatar src={imageURI}>{getAcronym(name)}</Avatar>
-      {name}
-    </>
-  );
-};
+    return (
+      <>
+        <Checkbox disabled checked={isICUSpecialist} />
+      </>
+    );
+  };
 
-const tableSchema = [
-  {
-    name: "",
-    displayName: "",
-    renderer: (tableData: data) => renderTableMenu(tableData),
-  },
+  const renderWorkingDays = (data: PractitionerData) => {
+    const { workingDays = [] } = data;
 
-  {
-    name: "name",
-    displayName: "Name",
-    renderer: (tableData: data) => renderName(tableData),
-    style: {
-      minWidth: "200px",
+    return (
+      <>
+        {workingDays.map((day, index) => (
+          <Chip key={index} label={day} />
+        ))}
+      </>
+    );
+  };
+
+  const renderTableMenu = (data: PractitionerData) => {
+    return (
+      <ThreeDotMenu>
+        <MenuItem onClick={() => onUpdate(data)}>
+          <ListItemIcon>
+            <Update fontSize="small" />
+          </ListItemIcon>
+          Update
+        </MenuItem>
+        <MenuItem onClick={() => onDelete(data)}>
+          <ListItemIcon>
+            <Delete fontSize="small" />
+          </ListItemIcon>
+          Delete
+        </MenuItem>
+      </ThreeDotMenu>
+    );
+  };
+
+  const renderName = (data: PractitionerData) => {
+    const { name, imageURI } = data;
+
+    return (
+      <>
+        <Avatar sx={{ marginRight: "var(--spacing-1x)" }} src={imageURI}>
+          {getAcronym(name)}
+        </Avatar>
+        {name}
+      </>
+    );
+  };
+
+  /**
+   *
+   * @param {string} date
+   * @returns {JSX.Element}
+   */
+  const renderDate = (date: string): JSX.Element => {
+    return <>{dayjs(date).format(DATE_FORMATE)}</>;
+  };
+
+  /**
+   * Table schema.
+   */
+  const tableSchema = [
+    {
+      name: "",
+      displayName: "",
+      renderer: (data: PractitionerData) => renderTableMenu(data),
     },
-  },
-  {
-    name: "isICUSpecialist",
-    displayName: "ICU Specialist",
-    renderer: (tableData: data) => renderICUSpecialist(tableData),
-  },
-  {
-    name: "dob",
-    displayName: "DOB",
-    style: {
-      minWidth: "140px",
+
+    {
+      name: "name",
+      displayName: "Name",
+      renderer: (data: PractitionerData) => renderName(data),
+      style: {
+        minWidth: "200px",
+      },
     },
-  },
-  {
-    name: "gender",
-    displayName: "Gender",
-  },
-  {
-    name: "startDate",
-    displayName: "Start Date",
-    style: {
-      minWidth: "140px",
+    {
+      name: "isICUSpecialist",
+      displayName: "ICU Specialist",
+      renderer: (data: PractitionerData) => renderICUSpecialist(data),
     },
-  },
-
-  {
-    name: "endDate",
-    displayName: "End Date",
-    style: {
-      minWidth: "140px",
+    {
+      name: "dob",
+      displayName: "DOB",
+      renderer: ({ dob }: PractitionerData) => renderDate(dob),
+      style: {
+        minWidth: "140px",
+      },
     },
-  },
-
-  {
-    name: "contact",
-    displayName: "Contact",
-  },
-  {
-    name: "workingDays",
-    displayName: "Working Days",
-    style: {
-      minWidth: "200px",
+    {
+      name: "gender",
+      displayName: "Gender",
     },
-    renderer: (tableData: data) => renderWorkingDays(tableData),
-  },
-];
+    {
+      name: "startDate",
+      displayName: "Start Date",
+      renderer: ({ startDate }: PractitionerData) => renderDate(startDate),
+      style: {
+        minWidth: "140px",
+      },
+    },
 
-const tableData = [
-  {
-    _id: "aQEN42NL2N3",
-    dob: "1999-05-26",
-    imageURI: "",
-    name: "Pramod Thapa",
-    gender: Gender.MALE,
-    endDate: "2023-07-06",
-    contact: "9867250879",
-    startDate: "2023-07-31",
-    isICUSpecialist: false,
-    workingDays: ["Sunday", "Monday"],
-  },
-  {
-    _id: "aQEN42NL2N3",
-    imageURI: "",
-    dob: "1999-05-26",
-    name: "Nandita Thapa",
-    gender: Gender.MALE,
-    endDate: "2023-07-06",
-    contact: "9867250879",
-    startDate: "2023-07-31",
-    isICUSpecialist: true,
-    workingDays: ["Sunday", "Monday", "Tuesday"],
-  },
-];
+    {
+      name: "endDate",
+      displayName: "End Date",
+      renderer: ({ endDate }: PractitionerData) => renderDate(endDate),
+      style: {
+        minWidth: "140px",
+      },
+    },
 
-const Wrapper = styled.div``;
+    {
+      name: "contact",
+      displayName: "Contact",
+    },
+    {
+      name: "workingDays",
+      displayName: "Working Days",
+      renderer: (data: PractitionerData) => renderWorkingDays(data),
+      style: {
+        minWidth: "200px",
+      },
+    },
+  ];
 
-export const PractitionerTable: React.FC = () => {
   return (
     <Wrapper>
-      <Table
-        key="test1"
-        tableSchema={tableSchema}
-        tableData={tableData}
-      ></Table>
+      {loading ? (
+        <FlexBox align="center" justify="center" className="h-250">
+          <CircularProgress />
+        </FlexBox>
+      ) : isEmpty(data) ? (
+        <FlexBox
+          align="center"
+          justify="center"
+          direction="column"
+          className="h-250"
+        >
+          <img className="" src={EmptyIcon} alt="empty" />
+          <div>No Practitioner Data</div>
+        </FlexBox>
+      ) : (
+        <Table tableSchema={tableSchema} tableData={data} />
+      )}
     </Wrapper>
   );
 };

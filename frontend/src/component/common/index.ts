@@ -5,3 +5,4 @@ export * from "./FlexBox";
 export * from "./TabPanel";
 export * from "./Container";
 export * from "./ImageUpload";
+export * from "./ThreeDotMenu";

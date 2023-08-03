@@ -1,6 +1,8 @@
 const v1Endpoints = {
   LOGIN: "/auth/login",
   SIGNUP: "/auth/signup",
+  ACCESS_TOKEN: "/auth/access-token",
+  PRACTITIONERS: "/practitioners/:id",
 };
 
 type EndPoint = Record<keyof typeof v1Endpoints, string>;

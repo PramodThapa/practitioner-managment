@@ -14,3 +14,9 @@ export interface SignUpFormValue {
   password: string;
   confirmPassword: string;
 }
+
+export enum Gender {
+  MALE = "Male",
+  FEMALE = "Female",
+  OTHERS = "Others",
+}
