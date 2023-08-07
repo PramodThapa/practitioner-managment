@@ -11,6 +11,7 @@ import {
 import { getAcronym } from "../../utils";
 import { Logout } from "@mui/icons-material";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 interface HeaderProps {
   handleLogout: () => void;
@@ -27,6 +28,8 @@ const Wrapper = styled.div`
 `;
 
 export const Header: React.FC<HeaderProps> = ({ handleLogout }) => {
+  const { username = "" } = useSelector((state: any) => state.user?.data);
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -45,7 +48,7 @@ export const Header: React.FC<HeaderProps> = ({ handleLogout }) => {
           <div className="title">Practitioner Profile Management </div>
           <div>
             <IconButton onClick={handleClick}>
-              <Avatar src="">{getAcronym("Pramod Thapa")}</Avatar>
+              <Avatar>{getAcronym(username)}</Avatar>
             </IconButton>
 
             <Menu

@@ -6,10 +6,17 @@ import "react-toastify/dist/ReactToastify.css";
 import { PrivateRoute } from "./hoc";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useDispatch } from "react-redux";
+import { setUser } from "./reducers";
+import { getUserFromLocalStorage } from "./services";
 
 const queryClient = new QueryClient();
 
 function App() {
+  const dispatch = useDispatch();
+
+  dispatch(setUser(getUserFromLocalStorage()));
+
   return (
     <>
       <QueryClientProvider client={queryClient}>

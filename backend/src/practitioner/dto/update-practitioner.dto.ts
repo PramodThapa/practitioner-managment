@@ -1,9 +1,9 @@
 import {
+  IsEnum,
   IsBoolean,
   IsDataURI,
-  IsEnum,
-  IsInt,
   IsOptional,
+  ArrayNotEmpty,
 } from 'class-validator';
 import { Gender } from '../schemas/practitioner.schema';
 
@@ -31,8 +31,8 @@ export class UpdatePractitionerDto {
   readonly endDate: Date;
 
   @IsOptional()
-  @IsInt({ message: 'Working days must be an integer.' })
-  readonly workingDays: number;
+  @ArrayNotEmpty({ message: 'Working days must be an integer.' })
+  readonly workingDays: string[];
 
   @IsOptional()
   readonly dob: Date;

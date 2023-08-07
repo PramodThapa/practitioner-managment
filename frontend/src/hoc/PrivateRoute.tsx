@@ -3,7 +3,7 @@ import React from "react";
 import { isEmpty } from "lodash";
 
 import { Navigate, useLocation } from "react-router-dom";
-import { getUserFromLocalStorage } from "../services/localStroage";
+import { getUserFromLocalStorage } from "../services/localStorage";
 
 interface PrivateRouteProps {
   children: React.ReactNode;

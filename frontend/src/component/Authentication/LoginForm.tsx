@@ -6,14 +6,14 @@ import { TextField, Box, Button } from "@mui/material";
 
 import { loginValidationSchema } from "../../validation";
 
-interface LoginInitialValue {
+export interface LoginInFormValue {
   username: string;
   password: string;
 }
 
 interface LoginFormProps {
   onFormSubmit: Function;
-  initialValue: LoginInitialValue;
+  initialValue: LoginInFormValue;
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({
@@ -31,7 +31,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   } = useFormik({
     initialValues: initialValue,
     validationSchema: loginValidationSchema,
-    onSubmit: async (value: LoginInitialValue, { setSubmitting }) =>
+    onSubmit: async (value: LoginInFormValue, { setSubmitting }) =>
       await onFormSubmit(value, setSubmitting),
   });
 

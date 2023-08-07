@@ -11,8 +11,8 @@ interface schema {
   renderer?: (data: any) => void;
 }
 
-interface TableProps {
-  tableData: any;
+interface TableProps<T> {
+  tableData: T[];
   tableSchema: schema[];
 }
 
@@ -45,7 +45,7 @@ const TableWrapper = styled.div`
   }
 `;
 
-export const Table = ({ tableData = [], tableSchema = [] }: TableProps) => (
+export const Table = <T,>({ tableData, tableSchema }: TableProps<T>) => (
   <TableWrapper>
     <table id="table">
       <thead>
@@ -64,7 +64,7 @@ export const Table = ({ tableData = [], tableSchema = [] }: TableProps) => (
       <tbody>
         {tableData?.map((data: any, tableRowIndex: number) => (
           <tr key={`row_${tableRowIndex}`}>
-            {tableSchema.map((schema, tableCellIndex) => (
+            {tableSchema?.map((schema, tableCellIndex) => (
               <td
                 className="cell"
                 style={schema.style}

@@ -6,7 +6,11 @@ import { TextField, Button, Box } from "@mui/material";
 
 import { signUpValidationSchema } from "../../validation";
 
-import { SignUpFormValue } from "../../types";
+export interface SignUpFormValue {
+  username: string;
+  password: string;
+  confirmPassword: string;
+}
 
 interface SignUpFormProps {
   handleSignUp: Function;

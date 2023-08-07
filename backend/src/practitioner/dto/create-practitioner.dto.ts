@@ -32,12 +32,11 @@ export class CreatePractitionerDto {
   readonly endDate: Date | string;
 
   @ArrayNotEmpty({ message: 'Working days is required.' })
-  readonly workingDays: [string];
+  readonly workingDays: string[];
 
   @IsNotEmpty({ message: 'DOB is required.' })
   readonly dob: Date | string;
 
-  @IsDataURI({ message: 'Please provide valid URI.' })
   @IsOptional()
   readonly imageURL: string;
 }

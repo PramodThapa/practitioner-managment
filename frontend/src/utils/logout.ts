@@ -1,4 +1,4 @@
-import { clearUserInfoFromLocalStorage } from "../services/localStroage";
+import { clearUserInfoFromLocalStorage } from "../services/localStorage";
 
 export const logOut = () => {
   clearUserInfoFromLocalStorage();

@@ -13,8 +13,6 @@ import axios, { AxiosResponse } from "axios";
 export const userLogin = (payload: any): Promise<AxiosResponse> => {
   const url = interpolate(endpoints.LOGIN);
 
-  console.log(url);
-
   return axios.post(url, payload, { ...axiosConfig });
 };
 
@@ -37,12 +35,17 @@ export const userSignUp = (payload: any): Promise<AxiosResponse> => {
  * Function to refresh access token.
  *
  * @param {any} payload
- * @returns {Promise<AxiosResponse>}
+ * @returns {Promise<any>}
  */
-export const refreshAccessToken = (payload: any): Promise<AxiosResponse> => {
-  const url = interpolate(endpoints.ACCESS_TOKEN, payload);
+export const refreshAccessToken = ({ id, refreshToken }: any): Promise<any> => {
+  const payload = { id };
+  const url = interpolate(endpoints.ACCESS_TOKEN);
 
   return axios.post(url, payload, {
     ...axiosConfig,
+    headers: {
+      ...axiosConfig.headers,
+      Authorization: `Bearer ${refreshToken}`,
+    },
   });
 };
