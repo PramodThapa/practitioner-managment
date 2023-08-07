@@ -10,11 +10,9 @@ interface FlexBoxProps {
   children?: ReactNode;
 }
 
-const FlexBox = styled.div<FlexBoxProps>`
+export const FlexBox = styled.div<FlexBoxProps>`
   display: flex;
   align-items: ${({ align }) => align};
   flex-direction: ${({ direction }) => direction};
   justify-content: ${({ justify }) => justify};
 `;
-
-export default FlexBox;

@@ -1,30 +1,117 @@
-import React, { useState } from "react";
-
-import { Paper, Button, Box } from "@mui/material";
+import { useRef, useState } from "react";
 
 import AddIcon from "@mui/icons-material/Add";
+import { Paper, Button, Box } from "@mui/material";
 
-import Modal from "../component/common/Modal";
-import Header from "../component/common/Header";
-import FlexBox from "../component/common/FlexBox";
-import Container from "../component/common/Container";
-import AddEditPractitionerForm from "../component/Practitioner/AddEditPractitionerForm";
-import Practitioner from "../component/Practitioner/Practitioner";
+import dayjs from "dayjs";
 
-export default function Home() {
-  const [addPractitionerOpen, setAddPractitionerOpen] = useState(false);
+import { Modal, Header, Container, FlexBox } from "../component/common";
 
-  const handleOpenModal = () => {
-    setAddPractitionerOpen(true);
+import {
+  PractitionerTable,
+  PractitionerForm,
+  PractitionerData,
+  PractitionerFormValues,
+} from "../component/Practitioner";
+
+import { logOut } from "../utils";
+
+import {
+  usePractitionerForm,
+  useAddPractitionerData,
+  useFetchPractitionerData,
+  useDeletePractitionerData,
+  useUpdatePractitionerData,
+} from "../hooks";
+
+import { DATE_FORMATE } from "../constants";
+
+export const Home = () => {
+  const practitionerFormRef = useRef<any | null>(null);
+  const { mutate: onAddPractitioner } = useAddPractitionerData();
+  const [selectedPractitioner, setSelectedPractitioner] = useState("");
+  const { mutate: onDeletePractitioner } = useDeletePractitionerData();
+  const { mutate: onUpdatePractitioner } = useUpdatePractitionerData();
+  const { isLoading, data: practitioners } = useFetchPractitionerData();
+
+  const {
+    formValues,
+    setFormValues,
+    practitionerFormOpen,
+    practitionerFormEditMode,
+    setPractitionerFormOpen,
+    setPractitionerFormEditMode,
+  } = usePractitionerForm();
+
+  const handleSubmit = () => {
+    practitionerFormRef.current?.handleSubmit?.();
   };
 
-  const handleCloseModal = () => {
-    setAddPractitionerOpen(false);
+  const onAddButtonClick = () => {
+    setPractitionerFormEditMode(false);
+    setPractitionerFormOpen(true);
+    setFormValues({
+      name: "",
+      dob: null,
+      gender: "",
+      contact: "",
+      imageURI: "",
+      endDate: null,
+      startDate: null,
+      workingDays: [],
+      isICUSpecialist: false,
+    });
+  };
+
+  const handleDeletePractitioner = ({ _id: id }: PractitionerData) => {
+    onDeletePractitioner(id);
+  };
+
+  const handleAddPractitioner = (data: PractitionerFormValues) => {
+    const { dob, endDate, startDate, ...rest } = data;
+    const payload = {
+      ...rest,
+      dob: dob?.format(DATE_FORMATE),
+      endDate: endDate?.format(DATE_FORMATE),
+      startDate: startDate?.format(DATE_FORMATE),
+    };
+
+    onAddPractitioner(payload);
+    setPractitionerFormOpen(false);
+  };
+
+  const handleUpdatePractitionerClick = (data: PractitionerData) => {
+    setSelectedPractitioner(data._id);
+    setPractitionerFormEditMode(true);
+    setPractitionerFormOpen(true);
+
+    const formValues = {
+      ...data,
+      dob: dayjs(data.dob),
+      endDate: dayjs(data.endDate),
+      startDate: dayjs(data.startDate),
+    } as PractitionerFormValues;
+
+    setFormValues(formValues);
+  };
+
+  const handleUpdatePractitioner = (data: PractitionerFormValues) => {
+    const { dob, endDate, startDate, ...rest } = data;
+    const payload = {
+      ...rest,
+      _id: selectedPractitioner,
+      dob: data.dob?.format(DATE_FORMATE),
+      endDate: data.endDate?.format(DATE_FORMATE),
+      startDate: data.startDate?.format(DATE_FORMATE),
+    } as PractitionerData;
+
+    onUpdatePractitioner(payload);
+    setPractitionerFormOpen(false);
   };
 
   return (
     <>
-      <Header />
+      <Header handleLogout={logOut} />
       <Box marginTop={"var(--spacing-6x)"}>
         <Container size="md">
           <FlexBox direction="row-reverse">
@@ -32,7 +119,7 @@ export default function Home() {
               color="primary"
               variant="contained"
               startIcon={<AddIcon />}
-              onClick={handleOpenModal}
+              onClick={() => onAddButtonClick()}
               sx={{ textTransform: "none" }}
             >
               Add Practitioner
@@ -42,29 +129,37 @@ export default function Home() {
           <Paper
             elevation={2}
             sx={{
-              overflowY: "scroll",
-              height: "calc(100vh - 190px)",
               marginTop: "var(--spacing-6x)",
             }}
           >
-            <Practitioner />
-            <Practitioner />
-            <Practitioner />
-            <Practitioner />
-            <Practitioner />
-            <Practitioner />
+            <PractitionerTable
+              data={practitioners}
+              loading={isLoading}
+              onDelete={handleDeletePractitioner}
+              onUpdate={handleUpdatePractitionerClick}
+            />
           </Paper>
 
           <Modal
-            title="Add Practitioner"
-            open={addPractitionerOpen}
-            onClose={handleCloseModal}
-            onSubmit={() => {}}
+            onSubmit={handleSubmit}
+            title={
+              (practitionerFormEditMode ? "Edit" : "Add") + " Practitioner"
+            }
+            open={practitionerFormOpen}
+            onClose={() => setPractitionerFormOpen(false)}
           >
-            <AddEditPractitionerForm />
+            <PractitionerForm
+              ref={practitionerFormRef}
+              initialValues={formValues}
+              handleFormSubmit={
+                practitionerFormEditMode
+                  ? handleUpdatePractitioner
+                  : handleAddPractitioner
+              }
+            />
           </Modal>
         </Container>
       </Box>
     </>
   );
-}
+};

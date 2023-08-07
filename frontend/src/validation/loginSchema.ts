@@ -1,10 +1,11 @@
 import * as yup from "yup";
 
-import { FORM_VALIDATION_MESSAGE } from "../constants/lang";
+import { FORM_VALIDATION_MESSAGE } from "../constants";
 
-const loginValidationSchema = yup.object({
+/**
+ * Form validation schema for login.
+ */
+export const loginValidationSchema = yup.object({
   username: yup.string().required(FORM_VALIDATION_MESSAGE.REQUIRED("Username")),
   password: yup.string().required(FORM_VALIDATION_MESSAGE.REQUIRED("Password")),
 });
-
-export default loginValidationSchema;

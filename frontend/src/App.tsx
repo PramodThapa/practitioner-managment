@@ -1,20 +1,54 @@
-import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Error404 from "./pages/Error404";
+import { Home, Login, Error404 } from "./pages";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { PrivateRoute } from "./hoc";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useDispatch } from "react-redux";
+import { setUser } from "./reducers";
+import { getUserFromLocalStorage } from "./services";
+
+const queryClient = new QueryClient();
 
 function App() {
+  const dispatch = useDispatch();
+
+  dispatch(setUser(getUserFromLocalStorage()));
+
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="*" element={<Error404 />} />
-        </Routes>
-      </BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <PrivateRoute>
+                  <Home />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/login" element={<Login />} />
+            <Route path="*" element={<Error404 />} />
+          </Routes>
+        </BrowserRouter>
+      </QueryClientProvider>
+
+      <ToastContainer
+        draggable
+        rtl={false}
+        closeOnClick
+        pauseOnHover
+        theme="colored"
+        hideProgressBar
+        pauseOnFocusLoss
+        autoClose={3000}
+        newestOnTop={false}
+        position="bottom-left"
+        style={{ fontSize: "var(--font-md)" }}
+      />
     </>
   );
 }

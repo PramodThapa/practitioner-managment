@@ -1,2 +1,2 @@
-export * from "./AddEditPractitionerForm";
-export * from "./Practitioner";
+export * from "./PractitionerTable";
+export * from "./PractitionerForm";

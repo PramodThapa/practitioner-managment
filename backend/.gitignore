@@ -33,3 +33,10 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+
+# Ignore files in the backend/data/diagnostic.data/ directory
+/data
+
+/.env
+

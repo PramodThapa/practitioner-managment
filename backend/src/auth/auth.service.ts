@@ -111,7 +111,7 @@ export class AuthService {
   /**
    * Function to hash password.
    *
-   * @param password - Password.
+   * @param {string} password Password.
    * @returns { Promise<string> }
    */
   private async hashedPassword(password: string): Promise<string> {
@@ -121,7 +121,7 @@ export class AuthService {
   /**
    * Gets the JWT tokens.
    *
-   * @param user
+   * @param {Users} user
    * @returns {Promise<Token>}
    */
   async getTokens(user: Users): Promise<Token> {
@@ -130,11 +130,13 @@ export class AuthService {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('ACCESS_JWT_SECRET'),
-        expiresIn: this.configService.get<string>('ACCESS_EXPIRES_IN'),
+        expiresIn: this.configService.get<string | number>('ACCESS_EXPIRES_IN'),
       }),
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('REFRESH_JWT_SECRET'),
-        expiresIn: this.configService.get<string>('REFRESH_EXPIRES_IN'),
+        expiresIn: this.configService.get<string | number>(
+          'REFRESH_EXPIRES_IN',
+        ),
       }),
     ]);
 

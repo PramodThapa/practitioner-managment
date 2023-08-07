@@ -2,34 +2,41 @@ import React from "react";
 
 import { useFormik } from "formik";
 
-import { TextField, Box, Alert } from "@mui/material";
+import { TextField, Box, Button } from "@mui/material";
 
-import loginValidationSchema from "../../schema/loginSchema";
+import { loginValidationSchema } from "../../validation";
 
-const LoginForm = React.forwardRef((_, ref) => {
-  const { handleBlur, handleChange, values, handleSubmit, touched, errors } =
-    useFormik({
-      initialValues: {
-        username: "",
-        password: "",
-      },
-      validationSchema: loginValidationSchema,
-      onSubmit: () => {
-        // Handle form submission here
-        console.log("Some API Call");
-      },
-    });
+export interface LoginInFormValue {
+  username: string;
+  password: string;
+}
 
-  React.useImperativeHandle(ref, () => ({
-    handleSubmit: handleSubmit,
-  }));
+interface LoginFormProps {
+  onFormSubmit: Function;
+  initialValue: LoginInFormValue;
+}
+
+export const LoginForm: React.FC<LoginFormProps> = ({
+  onFormSubmit,
+  initialValue,
+}) => {
+  const {
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+    isSubmitting,
+    handleSubmit,
+  } = useFormik({
+    initialValues: initialValue,
+    validationSchema: loginValidationSchema,
+    onSubmit: async (value: LoginInFormValue, { setSubmitting }) =>
+      await onFormSubmit(value, setSubmitting),
+  });
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* <Box>
-        <Alert severity="error">This is an error alert — check it out!</Alert>
-      </Box> */}
-
       <Box paddingTop={"var(--spacing-6x)"}>
         <TextField
           fullWidth
@@ -60,16 +67,15 @@ const LoginForm = React.forwardRef((_, ref) => {
         />
       </Box>
 
-      {/* <Button
+      <Button
         fullWidth
-        onClick={handleClick}
-        variant="contained"
+        type="submit"
         color="primary"
+        variant="contained"
+        disabled={isSubmitting}
       >
         Login
-      </Button> */}
+      </Button>
     </form>
   );
-});
-
-export default LoginForm;
+};

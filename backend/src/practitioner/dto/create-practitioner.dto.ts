@@ -1,10 +1,10 @@
 import {
-  IsInt,
   IsEnum,
   IsBoolean,
   IsDataURI,
   IsNotEmpty,
   IsOptional,
+  ArrayNotEmpty,
 } from 'class-validator';
 import { Gender } from '../schemas/practitioner.schema';
 
@@ -23,22 +23,20 @@ export class CreatePractitionerDto {
   readonly gender: Gender;
 
   @IsNotEmpty({ message: 'Contact is required!' })
-  readonly contact: number;
+  readonly contact: number | string;
 
   @IsNotEmpty({ message: 'Start date is required.' })
-  readonly startDate: Date;
+  readonly startDate: Date | string;
 
   @IsNotEmpty({ message: 'End date is required.' })
-  readonly endDate: Date;
+  readonly endDate: Date | string;
 
-  @IsNotEmpty({ message: 'Working days is required.' })
-  @IsInt({ message: 'Working days must be an integer.' })
-  readonly workingDays: number;
+  @ArrayNotEmpty({ message: 'Working days is required.' })
+  readonly workingDays: string[];
 
   @IsNotEmpty({ message: 'DOB is required.' })
-  readonly dob: Date;
+  readonly dob: Date | string;
 
-  @IsDataURI({ message: 'Please provide valid URI.' })
   @IsOptional()
   readonly imageURL: string;
 }

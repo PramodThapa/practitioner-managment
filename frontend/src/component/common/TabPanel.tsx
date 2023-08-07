@@ -5,7 +5,7 @@ interface TabPanelProps {
   className?: string;
 }
 
-export default function TabPanel(props: TabPanelProps) {
+export function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...others } = props;
 
   return (

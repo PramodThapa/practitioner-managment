@@ -19,7 +19,9 @@ export class PractitionerService {
    * @returns {Practitioner[]}
    */
   async findAll(): Promise<Practitioner[]> {
-    const practitioners = await this.practitionerModel.find();
+    const practitioners = await this.practitionerModel
+      .find()
+      .where({ isDeleted: false });
 
     return practitioners;
   }
@@ -43,7 +45,7 @@ export class PractitionerService {
   /**
    * Function to update practitioner.
    *
-   * @param updatePractitioner - Create practitioner Dto.
+   * @param {UpdatePractitionerDto} updatePractitioner Update practitioner Dto.
    * @returns {Practitioner}
    */
   async update(
@@ -58,12 +60,21 @@ export class PractitionerService {
   }
 
   /**
-   * Function to create practitioner.
+   * Function to delete practitioner.
    *
-   * @param createPractitioner - Create practitioner Dto.
-   * @returns {Practitioner}
+   * @param {string} id ID of practitioner to delete.
+   * @returns {Promise<Practitioner>}
    */
   async delete(id: string): Promise<Practitioner> {
-    return await this.practitionerModel.findByIdAndDelete(id);
+    return await this.practitionerModel.findByIdAndUpdate(
+      id,
+      {
+        isDeleted: true,
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
   }
 }

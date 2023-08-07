@@ -4,6 +4,18 @@
   box-sizing: border-box;
 }
 
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+  background-color: var(--color-grey-300);
+  border: 2px solid var(--color-grey-300);
+}
+
 :root {
   /* Grey color */
   --color-grey-50: #fafafa;
@@ -17,9 +29,9 @@
   --color-grey-800: #424242;
   --color-grey-900: #212121;
 
+  --color-red: #ff0000;
   --color-black: #000000;
   --color-white: #ffffff;
-  --color-light-blue: #daebfe;
 
   --spacing-1x: 0.25rem;
   --spacing-2x: 0.5rem;
