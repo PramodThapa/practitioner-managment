@@ -1,3 +1,7 @@
+import { forwardRef, useImperativeHandle } from "react";
+
+import styled from "styled-components";
+
 import {
   Select,
   Checkbox,
@@ -17,13 +21,10 @@ import { Dayjs } from "dayjs";
 
 import { useFormik } from "formik";
 
-import styled from "styled-components";
+import { Gender, Days } from "../../types";
 
-import { ImageUpload } from "../common";
-import { ErrorMessage } from "../common/ErrorMessage";
-import { forwardRef, useImperativeHandle } from "react";
+import { ImageUpload, ErrorMessage } from "../common";
 import { practitionerFormSchema } from "../../validation";
-import { Gender } from "../../types";
 
 const FormWrapper = styled.div`
   .mt-4 {
@@ -35,19 +36,10 @@ const FormWrapper = styled.div`
   }
 `;
 
-export enum Days {
-  SUNDAY = "Sunday",
-  MONDAY = "Monday",
-  TUESDAY = "Tuesday",
-  WEDNESDAY = "WednesDay",
-  THURSDAY = "Thursday",
-  FRIDAY = "Friday",
-  SATURDAY = "Saturday",
-}
-
 export interface PractitionerFormValues {
   name: string;
   gender: string;
+  imageURL: string;
   contact: string;
   dob: Dayjs | null;
   endDate: Dayjs | null;
@@ -59,9 +51,9 @@ export interface PractitionerFormValues {
 export const autoCompleteOptions = Object.values(Days) as string[];
 
 interface PractitionerFormProps {
-  handleFormSubmit: Function;
   ref?: React.MutableRefObject<any>;
-  initialValues: PractitionerFormValues | undefined;
+  initialValues: PractitionerFormValues;
+  handleFormSubmit: (value: PractitionerFormValues) => void;
 }
 
 export const PractitionerForm = forwardRef<any, PractitionerFormProps>(
@@ -77,14 +69,16 @@ export const PractitionerForm = forwardRef<any, PractitionerFormProps>(
     } = useFormik({
       initialValues: initialValues,
       validationSchema: practitionerFormSchema,
-      onSubmit: async (value) => await handleFormSubmit(value),
+      onSubmit: (value) => handleFormSubmit(value),
     });
 
     useImperativeHandle(ref, () => ({ handleSubmit }));
 
     return (
       <FormWrapper>
-        <ImageUpload />
+        <ImageUpload
+          onChange={(imageURL: string) => setFieldValue("imageURL", imageURL)}
+        />
 
         <TextField
           fullWidth

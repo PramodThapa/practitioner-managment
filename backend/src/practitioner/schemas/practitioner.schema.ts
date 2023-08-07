@@ -30,10 +30,13 @@ export class Practitioner {
   endDate: string;
 
   @Prop()
-  workingDays: [string];
+  workingDays: string[];
 
   @Prop()
   dob: string;
+
+  @Prop({ default: false, select: false })
+  isDeleted: boolean;
 }
 
 export const PractitionerSchema = SchemaFactory.createForClass(Practitioner);

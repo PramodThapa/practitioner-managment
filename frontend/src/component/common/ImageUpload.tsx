@@ -1,8 +1,9 @@
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { ChangeEvent, useRef, useState } from "react";
 import styled from "styled-components";
+import { uploadImage } from "../../services";
 
 const Wrapper = styled.div`
   display: flex;
@@ -16,19 +17,19 @@ const Wrapper = styled.div`
     overflow: hidden;
     border-radius: 50%;
     align-items: center;
-    border: 2px solid #ccc;
     justify-content: center;
+    border: 2px solid var(--color-grey-500);
   }
 
   .image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    display: block;
+    border-radius: 50%;
+    max-width: 100%;
   }
 
   .placeholder {
     display: flex;
-    color: #ccc;
+    color: var(--color-grey-500);
   }
 
   .upload-input {
@@ -36,25 +37,42 @@ const Wrapper = styled.div`
   }
 `;
 
-export const ImageUpload = () => {
-  const [previewUrl, setPreviewUrl] = useState<string | ArrayBuffer | null>(
-    null
-  );
+interface ImageUploadProps {
+  onChange: (data: string) => void;
+}
+
+export const ImageUpload = ({ onChange }: ImageUploadProps) => {
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   /**
+   * Function to handle image changes.
    *
    * @param event
    */
-  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    setIsUploading(true);
+
     const file = event.target.files?.[0];
 
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    const formData = new FormData();
+
+    formData.append("file", file);
+    formData.append("upload_preset", "PRACTITIONER");
+
+    try {
+      const response = await uploadImage(formData);
+      const { url } = response?.data;
+
+      onChange(url);
+      setPreviewUrl(url);
+    } catch (_error) {
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -68,7 +86,9 @@ export const ImageUpload = () => {
   return (
     <Wrapper className="image-upload-preview">
       <div className="image-container">
-        {previewUrl ? (
+        {isUploading ? (
+          <CircularProgress />
+        ) : previewUrl ? (
           <img src={previewUrl.toString()} alt="Preview" />
         ) : (
           <div className="placeholder">No Image</div>
@@ -85,6 +105,7 @@ export const ImageUpload = () => {
       <Button
         disableRipple
         color="primary"
+        disabled={isUploading}
         startIcon={<FileUploadIcon />}
         sx={{ textTransform: "none" }}
         onClick={handleUploadButtonClick}

@@ -1,8 +1,9 @@
-import { useRef } from "react";
-
-import { Paper, Button, Box } from "@mui/material";
+import { useRef, useState } from "react";
 
 import AddIcon from "@mui/icons-material/Add";
+import { Paper, Button, Box } from "@mui/material";
+
+import dayjs from "dayjs";
 
 import { Modal, Header, Container, FlexBox } from "../component/common";
 
@@ -13,28 +14,26 @@ import {
   PractitionerFormValues,
 } from "../component/Practitioner";
 
-import { handleSuccess, logOut } from "../utils";
+import { logOut } from "../utils";
+
 import {
-  useMutatePractitionerData,
-  useFetchPractitionerData,
   usePractitionerForm,
+  useAddPractitionerData,
+  useFetchPractitionerData,
+  useDeletePractitionerData,
+  useUpdatePractitionerData,
 } from "../hooks";
-import { createPractitioner, deletePractitioner } from "../services";
-import { DATE_FORMATE, SUCCESS_MESSAGE } from "../constants";
-import dayjs from "dayjs";
+
+import { DATE_FORMATE } from "../constants";
 
 export const Home = () => {
-  const { isLoading, data: practitioners } = useFetchPractitionerData();
-  const { mutate: onDeletePractitioner } = useMutatePractitionerData(
-    deletePractitioner,
-    () => handleSuccess(SUCCESS_MESSAGE.DELETE("practitioner"))
-  );
-  const { mutate: onAddPractitioner } = useMutatePractitionerData(
-    createPractitioner,
-    () => handleSuccess(SUCCESS_MESSAGE.ADD("practitioner"))
-  );
-
   const practitionerFormRef = useRef<any | null>(null);
+  const { mutate: onAddPractitioner } = useAddPractitionerData();
+  const [selectedPractitioner, setSelectedPractitioner] = useState("");
+  const { mutate: onDeletePractitioner } = useDeletePractitionerData();
+  const { mutate: onUpdatePractitioner } = useUpdatePractitionerData();
+  const { isLoading, data: practitioners } = useFetchPractitionerData();
+
   const {
     formValues,
     setFormValues,
@@ -56,6 +55,7 @@ export const Home = () => {
       dob: null,
       gender: "",
       contact: "",
+      imageURI: "",
       endDate: null,
       startDate: null,
       workingDays: [],
@@ -68,17 +68,20 @@ export const Home = () => {
   };
 
   const handleAddPractitioner = (data: PractitionerFormValues) => {
+    const { dob, endDate, startDate, ...rest } = data;
     const payload = {
-      ...data,
-      dob: data.dob?.format(DATE_FORMATE),
-      endDate: data.endDate?.format(DATE_FORMATE),
-      startDate: data.startDate?.format(DATE_FORMATE),
+      ...rest,
+      dob: dob?.format(DATE_FORMATE),
+      endDate: endDate?.format(DATE_FORMATE),
+      startDate: startDate?.format(DATE_FORMATE),
     };
 
     onAddPractitioner(payload);
+    setPractitionerFormOpen(false);
   };
 
-  const handlePractitionerUpdate = (data: PractitionerData) => {
+  const handleUpdatePractitionerClick = (data: PractitionerData) => {
+    setSelectedPractitioner(data._id);
     setPractitionerFormEditMode(true);
     setPractitionerFormOpen(true);
 
@@ -87,9 +90,23 @@ export const Home = () => {
       dob: dayjs(data.dob),
       endDate: dayjs(data.endDate),
       startDate: dayjs(data.startDate),
-    };
+    } as PractitionerFormValues;
 
     setFormValues(formValues);
+  };
+
+  const handleUpdatePractitioner = (data: PractitionerFormValues) => {
+    const { dob, endDate, startDate, ...rest } = data;
+    const payload = {
+      ...rest,
+      _id: selectedPractitioner,
+      dob: data.dob?.format(DATE_FORMATE),
+      endDate: data.endDate?.format(DATE_FORMATE),
+      startDate: data.startDate?.format(DATE_FORMATE),
+    } as PractitionerData;
+
+    onUpdatePractitioner(payload);
+    setPractitionerFormOpen(false);
   };
 
   return (
@@ -119,7 +136,7 @@ export const Home = () => {
               data={practitioners}
               loading={isLoading}
               onDelete={handleDeletePractitioner}
-              onUpdate={handlePractitionerUpdate}
+              onUpdate={handleUpdatePractitionerClick}
             />
           </Paper>
 
@@ -134,7 +151,11 @@ export const Home = () => {
             <PractitionerForm
               ref={practitionerFormRef}
               initialValues={formValues}
-              handleFormSubmit={handleAddPractitioner}
+              handleFormSubmit={
+                practitionerFormEditMode
+                  ? handleUpdatePractitioner
+                  : handleAddPractitioner
+              }
             />
           </Modal>
         </Container>

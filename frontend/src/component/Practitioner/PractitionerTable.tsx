@@ -31,7 +31,7 @@ export interface PractitionerData {
   gender: Gender;
   contact: string;
   endDate: string;
-  imageURI?: string;
+  imageURL?: string;
   startDate: string;
   workingDays: string[];
   isICUSpecialist: boolean;
@@ -104,11 +104,11 @@ export const PractitionerTable: React.FC<PractitionerTableProps> = ({
   };
 
   const renderName = (data: PractitionerData) => {
-    const { name, imageURI } = data;
+    const { name, imageURL } = data;
 
     return (
       <>
-        <Avatar sx={{ marginRight: "var(--spacing-1x)" }} src={imageURI}>
+        <Avatar sx={{ marginRight: "var(--spacing-1x)" }} src={imageURL}>
           {getAcronym(name)}
         </Avatar>
         {name}
@@ -209,7 +209,7 @@ export const PractitionerTable: React.FC<PractitionerTableProps> = ({
           <div>No Practitioner Data</div>
         </FlexBox>
       ) : (
-        <Table tableSchema={tableSchema} tableData={data} />
+        <Table<PractitionerData> tableSchema={tableSchema} tableData={data} />
       )}
     </Wrapper>
   );

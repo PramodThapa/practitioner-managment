@@ -1,7 +1,12 @@
 import { http } from "./http";
 import { endpoints } from "../constants";
 import { interpolate } from "../utils/string";
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
+import {
+  PractitionerData,
+  PractitionerFormValues,
+} from "../component/Practitioner";
+import { CLOUDINARY_API } from "../../config";
 
 /**
  * Function to get practitioner.
@@ -30,15 +35,12 @@ export const deletePractitioner = (id: string): Promise<any> => {
 /**
  * Function to update practitioner.
  *
- * @param {string} practitionerID ID of practitioner to update.
- * @param {any} payload Payload to update.
- * @returns {Promise<AxiosResponse>}
+ * @param  {PractitionerData} data Practitioner data.
+ * @returns {Promise<any>}
  */
-export const updatePractitioner = (
-  practitionerID: string,
-  payload: any
-): Promise<AxiosResponse> => {
-  const url = interpolate(endpoints.PRACTITIONERS, { practitionerID });
+export const updatePractitioner = (data: PractitionerData): Promise<any> => {
+  const { _id: id, ...payload } = data;
+  const url = interpolate(endpoints.PRACTITIONERS, { id });
 
   return http.put(url, payload);
 };
@@ -53,4 +55,14 @@ export const createPractitioner = (payload: any): Promise<any> => {
   const url = interpolate(endpoints.PRACTITIONERS, { id: "" });
 
   return http.post(url, payload);
+};
+
+/**
+ * Upload user image.
+ *
+ * @param {FormData} payload
+ * @returns {Promise}
+ */
+export const uploadImage = (payload: FormData): Promise<any> => {
+  return axios.post(CLOUDINARY_API, payload);
 };

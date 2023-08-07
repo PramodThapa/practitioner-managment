@@ -1,24 +1,24 @@
-import axios, {
-  AxiosProxyConfig,
-  AxiosRequestConfig,
-  CreateAxiosDefaults,
-  InternalAxiosRequestConfig,
-} from "axios";
+import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
 
-import { appConfig } from "../../config";
+import { APP_CONFIG } from "../../config";
 
 import { CONTENT_TYPE_JSON } from "../constants";
+
 import {
+  refreshAccessToken,
+  getUserFromLocalStorage,
   addUserLoginToLocalStorage,
   getAccessTokenFromLocalStorage,
   getRefreshTokenFromLocalStorage,
-  getUserFromLocalStorage,
-} from "./localStroage";
-import { refreshAccessToken } from ".";
+} from ".";
+
 import { logOut } from "../utils";
 
+/**
+ * Axios config.
+ */
 export const axiosConfig: AxiosRequestConfig = {
-  baseURL: appConfig.appUrl,
+  baseURL: APP_CONFIG.appUrl,
   headers: {
     "Content-Type": CONTENT_TYPE_JSON,
     Accept: CONTENT_TYPE_JSON,
@@ -33,7 +33,7 @@ const http = axios.create({
 });
 
 /**
- * Request interceptor
+ * Request interceptor.
  */
 http.interceptors.request.use(
   (request: InternalAxiosRequestConfig) => {
@@ -71,8 +71,9 @@ http.interceptors.response.use(
           refreshToken,
         });
 
-        const { token, user } = response?.data;
-        addUserLoginToLocalStorage(token, user);
+        const { data } = response?.data;
+        addUserLoginToLocalStorage(data?.token, data?.user);
+
         return http(originalRequest);
       } catch (error) {
         logOut();

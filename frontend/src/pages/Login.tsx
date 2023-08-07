@@ -13,7 +13,7 @@ import { LoginForm, SignUpForm } from "../component/Authentication";
 import { userLogin, userSignUp } from "../services";
 import { useNavigate } from "react-router-dom";
 import { LoginInFormValue, SignUpFormValue } from "../types";
-import { addUserLoginToLocalStorage } from "../services/localStroage";
+import { addUserLoginToLocalStorage } from "../services/localStorage";
 import { AxiosError } from "axios";
 
 import { handleError } from "../utils";
