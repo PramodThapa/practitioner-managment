@@ -55,7 +55,7 @@ export const Home = () => {
       dob: null,
       gender: "",
       contact: "",
-      imageURI: "",
+      imageURL: "",
       endDate: null,
       startDate: null,
       workingDays: [],
