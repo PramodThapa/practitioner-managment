@@ -8,15 +8,22 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import { Paper, Tabs, Tab, Box } from "@mui/material";
 
 import { FlexBox, TabPanel } from "../component/common";
-import { LoginForm, SignUpForm } from "../component/Authentication";
+import {
+  LoginForm,
+  SignUpForm,
+  SignUpFormValue,
+  LoginInFormValue,
+} from "../component/Authentication";
 
 import { userLogin, userSignUp } from "../services";
 import { useNavigate } from "react-router-dom";
-import { LoginInFormValue, SignUpFormValue } from "../types";
+
 import { addUserLoginToLocalStorage } from "../services/localStorage";
 import { AxiosError } from "axios";
 
 import { handleError } from "../utils";
+import { useDispatch } from "react-redux";
+import { setUser } from "../reducers";
 
 const PageWrapper = styled.div`
   height: 100vh;
@@ -32,6 +39,7 @@ const PageWrapper = styled.div`
 
 export function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [value, setValue] = useState<number>(0);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -56,6 +64,7 @@ export function Login() {
       const { token, user } = response?.data;
 
       addUserLoginToLocalStorage(token, user);
+      dispatch(setUser(user));
 
       navigate("/");
     } catch (error: Error | AxiosError | any) {
