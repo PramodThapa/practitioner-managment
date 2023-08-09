@@ -1,11 +1,9 @@
+import axios from "axios";
+
 import { http } from "./http";
 import { endpoints } from "../constants";
 import { interpolate } from "../utils/string";
-import axios, { AxiosResponse } from "axios";
-import {
-  PractitionerData,
-  PractitionerFormValues,
-} from "../component/Practitioner";
+import { PractitionerData } from "../component/Practitioner";
 import { CLOUDINARY_API } from "../../config";
 
 /**

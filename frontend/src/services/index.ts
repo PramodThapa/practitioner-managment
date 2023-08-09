@@ -1,4 +1,4 @@
 export * from "./http";
 export * from "./authService";
-export * from "./practitioner";
-export * from "./localStorage";
+export * from "./practitionerService";
+export * from "./localStorageService";

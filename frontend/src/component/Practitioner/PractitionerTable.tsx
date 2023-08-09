@@ -12,6 +12,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 
+import { isEmpty } from "lodash";
+
 import dayjs from "dayjs";
 
 import { FlexBox, Table, ThreeDotMenu } from "../common";
@@ -19,8 +21,8 @@ import { FlexBox, Table, ThreeDotMenu } from "../common";
 import { getAcronym } from "../../utils";
 
 import { Gender } from "../../types";
+
 import { DATE_FORMATE } from "../../constants";
-import { isEmpty } from "lodash";
 
 import EmptyIcon from "../../assets/EmptyIcon.svg";
 
