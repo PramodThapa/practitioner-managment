@@ -1,8 +1,10 @@
-import { Button, CircularProgress } from "@mui/material";
-
-import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { ChangeEvent, useRef, useState } from "react";
+
+import { Button, CircularProgress } from "@mui/material";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+
 import styled from "styled-components";
+
 import { uploadImage } from "../../services";
 
 const Wrapper = styled.div`

@@ -1,13 +1,18 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import { Home, Login, Error404 } from "./pages";
+import { useDispatch } from "react-redux";
+
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { PrivateRoute } from "./hoc";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useDispatch } from "react-redux";
+
+import { Home, Login, Error404 } from "./pages";
+
+import { PrivateRoute } from "./hoc";
+
 import { setUser } from "./reducers";
+
 import { getUserFromLocalStorage } from "./services";
 
 const queryClient = new QueryClient();

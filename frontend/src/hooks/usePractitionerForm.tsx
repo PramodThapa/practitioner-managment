@@ -7,7 +7,7 @@ export const usePractitionerForm = () => {
     dob: null,
     gender: "",
     contact: "",
-    imageURI: "",
+    imageURL: "",
     endDate: null,
     startDate: null,
     workingDays: [],

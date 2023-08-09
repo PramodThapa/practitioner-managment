@@ -1,3 +1,7 @@
+import { useState } from "react";
+
+import { useSelector } from "react-redux";
+
 import styled from "styled-components";
 
 import { Container, FlexBox } from "../common";
@@ -8,10 +12,9 @@ import {
   IconButton,
   ListItemIcon,
 } from "@mui/material";
-import { getAcronym } from "../../utils";
 import { Logout } from "@mui/icons-material";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+
+import { getAcronym } from "../../utils";
 
 interface HeaderProps {
   handleLogout: () => void;
